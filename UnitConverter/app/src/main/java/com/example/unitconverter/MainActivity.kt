@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberOverscrollEffect
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
@@ -23,6 +24,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,6 +52,15 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun UnitConverter(modifier: Modifier = Modifier) {
+
+    var inputValue by remember { mutableStateOf("") }
+    var outputValue by remember { mutableStateOf("") }
+    var inputUnit by remember { mutableStateOf("Centimeters") }
+    var outputUnit by remember { mutableStateOf("Meters") }
+    var iExpanded by remember { mutableStateOf(false) }
+    var oExpanded by remember { mutableStateOf(false) }
+    val conversionFactor = remember { mutableStateOf(0.01) }
+
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -54,7 +68,9 @@ fun UnitConverter(modifier: Modifier = Modifier) {
     ) {
         Text(text = "Unit Converter")
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(value = "", onValueChange = {})
+        OutlinedTextField(value = inputValue, onValueChange = {
+            inputValue = it
+        }, label = { Text("Enter Value") })
         Spacer(modifier = Modifier.height(16.dp))
         Row {
             Box {
@@ -66,7 +82,7 @@ fun UnitConverter(modifier: Modifier = Modifier) {
                         contentDescription = "Arrow Down"
                     )
                 }
-                DropdownMenu(expanded = true , onDismissRequest = {}) {
+                DropdownMenu(expanded = false , onDismissRequest = {}) {
                     DropdownMenuItem(
                         text = { Text("Centimeters") },
                         onClick = {}
@@ -94,7 +110,7 @@ fun UnitConverter(modifier: Modifier = Modifier) {
                         contentDescription = "Arrow Down"
                     )
                 }
-                DropdownMenu(expanded = true, onDismissRequest = {}) {
+                DropdownMenu(expanded = false, onDismissRequest = {}) {
                     DropdownMenuItem(
                         text = { Text("Centimeters") },
                         onClick = {}
