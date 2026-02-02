@@ -38,6 +38,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.navigation.compose)
+
     // Compose ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 

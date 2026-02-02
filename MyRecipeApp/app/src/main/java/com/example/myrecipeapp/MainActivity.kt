@@ -12,12 +12,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.navigation.compose.rememberNavController
 import com.example.myrecipeapp.ui.theme.MyRecipeAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
             val isDark = isSystemInDarkTheme()
             enableEdgeToEdge(
                 statusBarStyle = if(isDark) {
@@ -28,7 +30,7 @@ class MainActivity : ComponentActivity() {
             )
             MyRecipeAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    RecipeScreen(modifier = Modifier.padding(innerPadding))
+                    RecipeApp(navController = navController, Modifier.padding(innerPadding))
                 }
             }
         }
