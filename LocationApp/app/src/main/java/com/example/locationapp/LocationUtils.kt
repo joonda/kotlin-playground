@@ -1,13 +1,21 @@
 package com.example.locationapp
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.os.Looper
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.LatLng
+import java.util.Locale
 
 /**
  * 위치 권한 및 위치 데이터를 관리하는 유틸 클래스
@@ -17,6 +25,7 @@ class LocationUtils(val context: Context) {
     private val _fusedLocationClient: FusedLocationProviderClient
         = LocationServices.getFusedLocationProviderClient(context)
 
+    @SuppressLint("MissingPermission")
     fun requestLocationUpdates(viewModel: LocationViewModel) {
         val locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
@@ -27,6 +36,11 @@ class LocationUtils(val context: Context) {
                 }
             }
         }
+
+        val locationRequest = LocationRequest.Builder(
+            Priority.PRIORITY_HIGH_ACCURACY, 1000).build()
+
+        _fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 
     fun hasLocationPermission(context: Context): Boolean {
@@ -37,5 +51,19 @@ class LocationUtils(val context: Context) {
                 ContextCompat.checkSelfPermission(context,
                     Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
+    }
+
+    // 위/경도를 실제 주소로 변환
+    fun reverseGeocodeLocation(location: LocationData): String {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val coordinate = LatLng(location.latitude, location.longitude)
+        val addresses: MutableList<Address>? =
+            geocoder.getFromLocation(coordinate.latitude, coordinate.longitude, 1)
+
+        return if (addresses?.isNotEmpty() == true) {
+            addresses[0].getAddressLine(0)
+        } else {
+            "Address not found"
+        }
     }
 }

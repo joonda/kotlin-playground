@@ -63,6 +63,12 @@ fun LocationDisplay(
     context: Context
 ) {
 
+    val location = viewModel.location.value
+
+    val address = location?.let {
+        locationUtils.reverseGeocodeLocation(location)
+    }
+
     /**
      * 위치 권한을 요청하기 위한 Activity Result Launcher
      * 권한 요청 결과에 따라 위치 접근 여부 판단
@@ -75,6 +81,8 @@ fun LocationDisplay(
                 &&
                 permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true) {
                 // Access to location
+                locationUtils.requestLocationUpdates(viewModel = viewModel)
+
             } else {
                 // 권한이 거부된 경우
                 val rationaleRequired = ActivityCompat.shouldShowRequestPermissionRationale(
@@ -100,11 +108,17 @@ fun LocationDisplay(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Location not available")
+        if (location != null) {
+            Text(text = "Address: ${location.latitude} ${location.longitude} \n $address")
+        } else {
+            Text(text = "Location not available")
+        }
+
         Button(onClick = {
             // 이미 위치 권한이 있는 경우
             if (locationUtils.hasLocationPermission(context)) {
                 // Permission already granted update the location
+                locationUtils.requestLocationUpdates(viewModel)
             } else {
                 // 위치 권한 요청
                 // Request location permission
