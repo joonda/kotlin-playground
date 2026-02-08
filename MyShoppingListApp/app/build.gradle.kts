@@ -1,3 +1,5 @@
+import shadow.bundletool.com.android.tools.r8.internal.jv
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -33,8 +35,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        }
     }
     buildFeatures {
         compose = true
@@ -42,6 +46,16 @@ android {
 }
 
 dependencies {
+    implementation(libs.google.maps.compose)
+    implementation(libs.google.play.services.maps)
+    implementation(libs.google.play.services.location)
+
+    implementation(libs.androidx.lifecycle)
+    implementation(libs.squareup.retrofit)
+    implementation(libs.squareup.retrofit.gson)
+    implementation(libs.navigation.compose)
+
+    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
